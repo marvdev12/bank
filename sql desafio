@@ -1,37 +1,67 @@
 -- Criação do banco de dados
-CREATE DATABASE nome_do_banco;
+CREATE DATABASE ecommerce;
 
 -- Uso do banco de dados criado
-USE nome_do_banco;
+USE ecommerce;
 
--- Criação da tabela Categoria
-CREATE TABLE Categoria (
-    id INT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL
+-- Criação da tabela Cliente
+CREATE TABLE Cliente (
+    cliente_id INT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    tipo ENUM('PF', 'PJ') NOT NULL
+);
+
+-- Criação da tabela Pedido
+CREATE TABLE Pedido (
+    pedido_id INT PRIMARY KEY,
+    data DATE NOT NULL,
+    cliente_id INT,
+    FOREIGN KEY (cliente_id) REFERENCES Cliente(cliente_id)
 );
 
 -- Criação da tabela Produto
 CREATE TABLE Produto (
-    id INT PRIMARY KEY,
+    produto_id INT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
-    preço DECIMAL(10, 2) NOT NULL,
-    categoria_id INT,
-    FOREIGN KEY (categoria_id) REFERENCES Categoria(id)
+    preço DECIMAL(10, 2) NOT NULL
 );
 
--- Inserção de dados na tabela Categoria
-INSERT INTO Categoria (id, nome) VALUES
-(1, 'Eletrônicos'),
-(2, 'Roupas'),
-(3, 'Alimentos');
+-- Criação da tabela Fornecedor
+CREATE TABLE Fornecedor (
+    fornecedor_id INT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL
+);
 
--- Inserção de dados na tabela Produto
-INSERT INTO Produto (id, nome, preço, categoria_id) VALUES
-(1, 'Smartphone', 1500.00, 1),
-(2, 'Camiseta', 30.00, 2),
-(3, 'Arroz', 5.50, 3);
+-- Criação da tabela Estoque
+CREATE TABLE Estoque (
+    estoque_id INT PRIMARY KEY,
+    produto_id INT,
+    fornecedor_id INT,
+    quantidade INT NOT NULL,
+    FOREIGN KEY (produto_id) REFERENCES Produto(produto_id),
+    FOREIGN KEY (fornecedor_id) REFERENCES Fornecedor(fornecedor_id)
+);
 
--- Consulta para recuperar informações sobre produtos e suas categorias
-SELECT p.id AS produto_id, p.nome AS produto_nome, p.preço AS produto_preço, c.nome AS categoria_nome
-FROM Produto p
-JOIN Categoria c ON p.categoria_id = c.id;
+-- Criação da tabela FormaPagamento
+CREATE TABLE FormaPagamento (
+    forma_pagamento_id INT PRIMARY KEY,
+    descricao VARCHAR(100) NOT NULL
+);
+
+-- Criação da tabela Pagamento
+CREATE TABLE Pagamento (
+    pagamento_id INT PRIMARY KEY,
+    pedido_id INT,
+    forma_pagamento_id INT,
+    FOREIGN KEY (pedido_id) REFERENCES Pedido(pedido_id),
+    FOREIGN KEY (forma_pagamento_id) REFERENCES FormaPagamento(forma_pagamento_id)
+);
+
+-- Criação da tabela Entrega
+CREATE TABLE Entrega (
+    entrega_id INT PRIMARY KEY,
+    pedido_id INT,
+    status VARCHAR(100),
+    codigo_rastreio VARCHAR(100),
+    FOREIGN KEY (pedido_id) REFERENCES Pedido(pedido_id)
+);
