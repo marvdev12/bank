@@ -1,0 +1,37 @@
+-- Criação do banco de dados
+CREATE DATABASE nome_do_banco;
+
+-- Uso do banco de dados criado
+USE nome_do_banco;
+
+-- Criação da tabela Categoria
+CREATE TABLE Categoria (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL
+);
+
+-- Criação da tabela Produto
+CREATE TABLE Produto (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preço DECIMAL(10, 2) NOT NULL,
+    categoria_id INT,
+    FOREIGN KEY (categoria_id) REFERENCES Categoria(id)
+);
+
+-- Inserção de dados na tabela Categoria
+INSERT INTO Categoria (id, nome) VALUES
+(1, 'Eletrônicos'),
+(2, 'Roupas'),
+(3, 'Alimentos');
+
+-- Inserção de dados na tabela Produto
+INSERT INTO Produto (id, nome, preço, categoria_id) VALUES
+(1, 'Smartphone', 1500.00, 1),
+(2, 'Camiseta', 30.00, 2),
+(3, 'Arroz', 5.50, 3);
+
+-- Consulta para recuperar informações sobre produtos e suas categorias
+SELECT p.id AS produto_id, p.nome AS produto_nome, p.preço AS produto_preço, c.nome AS categoria_nome
+FROM Produto p
+JOIN Categoria c ON p.categoria_id = c.id;
